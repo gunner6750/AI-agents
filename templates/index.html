@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI News Aggregator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>AI News Aggregator</h1>
+    <a href="{{ url_for('fetch_papers_route') }}"><button>Fetch New Papers</button></a>
+
+    <div class="tab">
+        <button class="tablinks" onclick="openTab(event, 'News')">News</button>
+        <button class="tablinks" onclick="openTab(event, 'Papers')">Research Papers</button>
+    </div>
+
+    <div id="News" class="tabcontent">
+        <h2>News</h2>
+        <ul>
+            {% for item in news %}
+                <li>
+                    <h3>{{ item.title }}</h3>
+                    <p>{{ item.snippet }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div id="Papers" class="tabcontent">
+        <h2>Research Papers</h2>
+        <ul>
+            {% for paper in papers %}
+                <li>
+                    <h3><a href="{{ paper.link }}">{{ paper.title }}</a></h3>
+                    <p>Authors: {{ paper.authors }}</p>
+                    <p>Date: {{ paper.date }}</p>
+                    <p>
+                        <span id="summary-{{ loop.index }}" class="summary">{{ paper.summary[:200] }}</span>
+                        <span id="dots-{{ loop.index }}">...</span>
+                        <span id="more-{{ loop.index }}" class="more" style="display: none;">{{ paper.summary[200:] }}</span>
+                        <a href="#" onclick="myFunction({{ loop.index }})" id="myBtn-{{ loop.index }}">More</a>
+                    </p>
+                </li>
+            {% endfor %}
+        </ul>
+
+        <script>
+            function myFunction(index) {
+                var dots = document.getElementById("dots-" + index);
+                var moreText = document.getElementById("more-" + index);
+                var btnText = document.getElementById("myBtn-" + index);
+
+                if (dots.style.display === "none") {
+                    dots.style.display = "inline";
+                    btnText.innerHTML = "More";
+                    moreText.style.display = "none";
+                } else {
+                    dots.style.display = "none";
+                    btnText.innerHTML = "Less";
+                    moreText.style.display = "inline";
+                }
+            }
+        </script>
+    </div>
+
+    
+    <script>
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        document.getElementsByClassName("tablinks")[0].click();
+    </script>
+</body>
+</html>
